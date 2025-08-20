@@ -16,16 +16,21 @@ async function cargarRutina() {
       li.innerHTML += `Serie ${s+1}: <input type="number" min="0" placeholder="reps" data-key="${key}"> <span class="avg">${avgNum}</span><br>`;
     }
 
+    // Div para sumatoria y barra de progreso
     const sumDiv = document.createElement('div');
     sumDiv.classList.add('sum-reps');
-    sumDiv.textContent = 'Total reps: 0 (-)'; // X (Y)
+    sumDiv.textContent = 'Total reps: 0 (-)';
+    const progBar = document.createElement('div');
+    progBar.classList.add('progress-bar');
     li.appendChild(sumDiv);
+    li.appendChild(progBar);
 
     lista.appendChild(li);
 
     function actualizarSumatoria(ejLi, keyBase) {
       const inputs = Array.from(ejLi.querySelectorAll('input'));
       const sumDiv = ejLi.querySelector('.sum-reps');
+      const progBar = ejLi.querySelector('.progress-bar');
       let total = 0;
       let historialSum = [];
       inputs.forEach((inp, idx) => {
@@ -36,6 +41,11 @@ async function cargarRutina() {
       });
       const avgTotal = historialSum.length > 0 ? (historialSum.reduce((a,b)=>a+b,0)/historialSum.length).toFixed(1) : '-';
       sumDiv.textContent = `Total reps: ${total} (${avgTotal})`;
+
+      // Animar barra de progreso
+      const maxReps = 50; // ajustable según tu rutina
+      const widthPercent = Math.min(100, (total/maxReps)*100);
+      progBar.style.width = widthPercent + '%';
     }
 
     li.querySelectorAll('input').forEach(input => {
@@ -45,9 +55,10 @@ async function cargarRutina() {
         if(!historial[key]) historial[key]=[];
         if(v) historial[key].push(v);
         localStorage.setItem('historial', JSON.stringify(historial));
+
         actualizarSumatoria(li, ej.nombre);
 
-        // actualizar solo el número del promedio
+        // animación contador promedio
         const val = historial[key] || [];
         const avgNum = val.length>0 ? (val.slice(-6).reduce((a,b)=>a+b,0)/Math.min(6,val.length)).toFixed(1) : '-';
         input.nextElementSibling.textContent = avgNum;
