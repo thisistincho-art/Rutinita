@@ -12,13 +12,13 @@ async function cargarRutina() {
     for (let s=0; s<ej.series; s++) {
       const key = `${ej.nombre}-s${s}`;
       const val = historial[key] || [];
-      const avg = val.length>0 ? (val.slice(-6).reduce((a,b)=>a+b,0)/Math.min(6,val.length)).toFixed(1) : '-';
-      li.innerHTML += `Serie ${s+1}: <input type="number" min="0" placeholder="reps" data-key="${key}"> (Prom 6 últimos: <span class="avg">${avg}</span>)<br>`;
+      const avgNum = val.length>0 ? (val.slice(-6).reduce((a,b)=>a+b,0)/Math.min(6,val.length)).toFixed(1) : '-';
+      li.innerHTML += `Serie ${s+1}: <input type="number" min="0" placeholder="reps" data-key="${key}"> <span class="avg">${avgNum}</span><br>`;
     }
 
     const sumDiv = document.createElement('div');
     sumDiv.classList.add('sum-reps');
-    sumDiv.textContent = 'Total reps: 0 (Prom 6 últimos: -)';
+    sumDiv.textContent = 'Total reps: 0 (-)'; // X (Y)
     li.appendChild(sumDiv);
 
     lista.appendChild(li);
@@ -35,7 +35,7 @@ async function cargarRutina() {
         if(historial[k]) historialSum.push(...historial[k].slice(-6));
       });
       const avgTotal = historialSum.length > 0 ? (historialSum.reduce((a,b)=>a+b,0)/historialSum.length).toFixed(1) : '-';
-      sumDiv.textContent = `Total reps: ${total} (Prom 6 últimos: ${avgTotal})`;
+      sumDiv.textContent = `Total reps: ${total} (${avgTotal})`;
     }
 
     li.querySelectorAll('input').forEach(input => {
@@ -46,6 +46,11 @@ async function cargarRutina() {
         if(v) historial[key].push(v);
         localStorage.setItem('historial', JSON.stringify(historial));
         actualizarSumatoria(li, ej.nombre);
+
+        // actualizar solo el número del promedio
+        const val = historial[key] || [];
+        const avgNum = val.length>0 ? (val.slice(-6).reduce((a,b)=>a+b,0)/Math.min(6,val.length)).toFixed(1) : '-';
+        input.nextElementSibling.textContent = avgNum;
       });
     });
   });
