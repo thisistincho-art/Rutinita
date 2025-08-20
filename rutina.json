@@ -1,0 +1,10 @@
+{
+  "ejercicios": [
+    {"nombre": "Press inclinado con mancuernas", "series": 3},
+    {"nombre": "Remo con mancuernas en banco inclinado", "series": 3},
+    {"nombre": "Curl de bíceps", "series": 3},
+    {"nombre": "Press militar", "series": 3},
+    {"nombre": "Press francés", "series": 3},
+    {"nombre": "Vuelos laterales", "series": 3}
+  ]
+}
